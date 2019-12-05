@@ -1,10 +1,14 @@
-#!/bin/bash
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-sudo apt-get update -y
-sudo apt-get install ros-melodic-ros-base -y
-sudo rosdep init
-rosdep update
-sudo su ggc_user --shell /bin/bash
-sudo sh -c 'echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc'
-exit
+export SSID=Condensate
+export PASS=!Dev1ces+Are+Com1ng!
+export BUNDLE_PATH=/home/ggc_user/roboMakerDeploymentPackage
+export BUNDLE_FILE_NAME=output.tar
+export REGION=us-east-1
+
+sudo nmcli device wifi connect $SSID password $PASS
+sudo apt-get install awscli
+sudo mkdir -p $BUNDLE_PATH
+wget -O /home/ggc_user/$BUNDLE_FILE_NAME https://jetbot-workshop-us-east-1-rmw-assets.s3.amazonaws.com/jetbot/robot_ws/output.tar
+sudo wget https://github.com/aws-robotics/aws-robomaker-bundle-support-library/releases/download/0.0.2/bundle-helper.linux.arm
+sudo chmod +x ./bundle-helper.linux.arm
+./bundle-helper.linux.arm --bundle /home/ggc_user/$BUNDLE_FILE_NAME --cache $BUNDLE_PATH
+chown --recursive ggc_user:ggc_group $BUNDLE_PATH
